@@ -1,25 +1,35 @@
 import React, { useState } from "react";  
+import axios from "axios";
 const Url_form = () => {
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = useState("https://www.google.com");
   const [shortUrl, setShortUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
+  const [isCopied, setIsCopied] = useState(false);
+console.log(url)
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!url) return;
 
     setIsLoading(true);
-    // Simulate API call - replace with actual API
-    setTimeout(() => {
-      setShortUrl(
-        `https://short.ly/${Math.random().toString(36).substr(2, 8)}`
-      );
+    
+    try {
+      const response = await axios.post("http://localhost:3000/api/create", {url});
+      console.log(response);
+      setShortUrl(response.data);
+    } catch (error) {
+      console.error('Error shortening URL:', error);
+      // Optionally show error message to user
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(shortUrl);
+    setIsCopied(true);
+    setTimeout(() => {
+      setIsCopied(false);
+    }, 2000);
   };
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -61,10 +71,11 @@ const Url_form = () => {
               className="flex-1 px-3 py-2 bg-white border border-green-300 rounded text-sm"
             />
             <button
+              type="button"
               onClick={copyToClipboard}
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded transition duration-200"
+              className={`px-4 py-2 ${isCopied ? 'bg-gray-500' : 'bg-green-600 hover:bg-green-700'} text-white text-sm rounded transition duration-200`}
             >
-              Copy
+              {isCopied ? 'Copied!' : 'Copy'}
             </button>
           </div>
         </div>
