@@ -1,82 +1,13 @@
-import React, { useState } from 'react'
+import HomePage from "./pages/HomePage";
+
 
 const App = () => {
-  const [url, setUrl] = useState('')
-  const [shortUrl, setShortUrl] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!url) return
-
-    setIsLoading(true)
-    // Simulate API call - replace with actual API
-    setTimeout(() => {
-      setShortUrl(`https://short.ly/${Math.random().toString(36).substr(2, 8)}`)
-      setIsLoading(false)
-    }, 1000)
-  }
-
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(shortUrl)
-  }
-
   return (
-    <div className='bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center p-4'>
-      <div className='bg-white rounded-lg shadow-xl p-8 w-full max-w-md'>
-        <h1 className='text-3xl font-bold text-gray-800 text-center mb-8'>
-          URL Shortener
-        </h1>
-        
-        <form onSubmit={handleSubmit} className='space-y-4'>
-          <div>
-            <label htmlFor="url" className='block text-sm font-medium text-gray-700 mb-2'>
-              Enter your URL
-            </label>
-            <input
-              type="url"
-              id="url"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="https://example.com"
-              className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none'
-              required
-            />
-          </div>
-          
-          <button
-            type="submit"
-            disabled={isLoading}
-            className='w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200'
-          >
-            {isLoading ? 'Shortening...' : 'Shorten URL'}
-          </button>
-        </form>
-
-        {shortUrl && (
-          <div className='mt-6 p-4 bg-green-50 border border-green-200 rounded-lg'>
-            <label className='block text-sm font-medium text-green-800 mb-2'>
-              Your shortened URL:
-            </label>
-            <div className='flex gap-2'>
-              <input
-                type="text"
-                value={shortUrl}
-                readOnly
-                className='flex-1 px-3 py-2 bg-white border border-green-300 rounded text-sm'
-              />
-              <button
-                onClick={copyToClipboard}
-                className='px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded transition duration-200'
-              >
-                Copy
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
+    <div>
+    <HomePage />
+    
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
