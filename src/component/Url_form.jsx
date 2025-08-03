@@ -1,28 +1,44 @@
-import React, { useState } from "react";  
+import React, { useState } from "react";
 import axios from "axios";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
 const Url_form = () => {
   const [url, setUrl] = useState("https://www.google.com");
   const [shortUrl, setShortUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
-console.log(url)
+  // const queryClient = useQueryClient();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!url) return;
 
     setIsLoading(true);
-    
+
     try {
-      const response = await axios.post("http://localhost:3000/api/create", {url});
+      const response = await axios.post("http://localhost:3000/api/create", {
+        url,
+      });
       console.log(response);
       setShortUrl(response.data);
     } catch (error) {
-      console.error('Error shortening URL:', error);
+      console.error("Error shortening URL:", error);
       // Optionally show error message to user
     } finally {
       setIsLoading(false);
     }
   };
+
+  const query = useQuery({ queryKey: ["todos"], queryFn: handleSubmit });
+
+  const mutation = useMutation({
+    mutationFn: handleSubmit,
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
+
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(shortUrl);
@@ -73,9 +89,11 @@ console.log(url)
             <button
               type="button"
               onClick={copyToClipboard}
-              className={`px-4 py-2 ${isCopied ? 'bg-gray-500' : 'bg-green-600 hover:bg-green-700'} text-white text-sm rounded transition duration-200`}
+              className={`px-4 py-2 ${
+                isCopied ? "bg-gray-500" : "bg-green-600 hover:bg-green-700"
+              } text-white text-sm rounded transition duration-200`}
             >
-              {isCopied ? 'Copied!' : 'Copy'}
+              {isCopied ? "Copied!" : "Copy"}
             </button>
           </div>
         </div>
